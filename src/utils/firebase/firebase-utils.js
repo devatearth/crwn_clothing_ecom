@@ -1,6 +1,15 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider , createUserWithEmailAndPassword ,signInWithEmailAndPassword} from 'firebase/auth'
+import {
+    getAuth,
+    signInWithRedirect,
+    signInWithPopup,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut
+}
+    from 'firebase/auth'
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -31,24 +40,24 @@ export const signInWithGooglePopup = async () => {
 };
 
 export const signInWithGoogleRedirect = () =>
-  signInWithRedirect(auth, googleProvider);
+    signInWithRedirect(auth, googleProvider);
 
-  export const signInAuthUserWithEmailAndPassword =async(email,password)=>{
-    await signInWithEmailAndPassword(auth,email,password);
-  }
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+    return await signInWithEmailAndPassword(auth, email, password);
+}
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async(userAuth,additionalInfo)=>{
-    const userDocRef = doc(db,'users',userAuth.uid);
-    console.log({userDocRef});
+export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
+    const userDocRef = doc(db, 'users', userAuth.uid);
+    console.log({ userDocRef });
     const userSnapshot = await getDoc(userDocRef);
-    console.log({userSnapshot});
-    if(!userSnapshot.exists()){
-        const {displayName,email} = userAuth;
+    console.log({ userSnapshot });
+    if (!userSnapshot.exists()) {
+        const { displayName, email } = userAuth;
         const createdAt = new Date();
         try {
-            await setDoc(userDocRef,{
+            await setDoc(userDocRef, {
                 displayName,
                 email,
                 createdAt,
@@ -60,7 +69,9 @@ export const createUserDocumentFromAuth = async(userAuth,additionalInfo)=>{
     }
 }
 
-export const createUserAuthFromEmailAndPassword = async(email,password)=>{
-    if(!email || !password) return;
-    return await createUserWithEmailAndPassword(auth,email,password);
+export const createUserAuthFromEmailAndPassword = async (email, password) => {
+    if (!email || !password) return;
+    return await createUserWithEmailAndPassword(auth, email, password);
 }
+
+export const signOutUser = async () => await signOut(auth);

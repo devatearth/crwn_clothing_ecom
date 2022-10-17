@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { createUserAuthFromEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase-utils";
 import FromInput from "../form-Input/form-input-component";
 import Button from "../button/button-component";
 import './sign-up-style.scss';
+import { UserContext } from '../../contexts/user.context';
 
 const defaultFormFields = {
     displayName: '',
@@ -15,6 +16,7 @@ const defaultFormFields = {
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName, email, password, confirmPassword } = formFields;
+    const { setCurrentUser } = useContext(UserContext);
     const handleChange = (event) => {
         const { name, value } = event.target;
         return (
@@ -29,7 +31,7 @@ const SignUpForm = () => {
         }
         try {
             const { user } = await createUserAuthFromEmailAndPassword(email, password);
-            console.log(user);
+            setCurrentUser(user);
             await createUserDocumentFromAuth(user, { displayName });
             setFormFields(defaultFormFields);
         } catch (error) {
@@ -42,7 +44,7 @@ const SignUpForm = () => {
 
     return (
         <div className="sign-up-container">
-        <h2>Don't have a account ? </h2>
+            <h2>Don't have a account ? </h2>
             <span>Sign-Up with email and password</span>
             <form onSubmit={handleSubmit}>
                 <FromInput
@@ -61,15 +63,15 @@ const SignUpForm = () => {
                 />
                 <FromInput
                     label={'Password'}
-                    type="text"
+                    type="password"
                     name="password"
                     value={password}
                     onChange={handleChange}
                 />
                 <FromInput
                     label={'Confirm Password'}
-                    type="text"
-                    name="password"
+                    type="password"
+                    name="confirmPassword"
                     value={confirmPassword}
                     onChange={handleChange}
                 />
