@@ -13,12 +13,12 @@ export const UserProvider = ({ children }) => {
     const value = { currentUser, setCurrentUser };
 
     useEffect(() => {
-        const userAuth = onUserAuthChangedLister((user) => {
+        const unSubscribe = onUserAuthChangedLister((user) => {
             if (user) { createUserDocumentFromAuth(user); }
             setCurrentUser(user);
         });
-        return userAuth;
-    })
+        return unSubscribe;
+    },[])
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
