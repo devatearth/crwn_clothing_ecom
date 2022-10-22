@@ -11,7 +11,7 @@ import {
     onAuthStateChanged
 }
     from 'firebase/auth'
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, getDoc, collection, writeBatch, query, getDocs } from 'firebase/firestore'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -49,6 +49,30 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
 export const db = getFirestore();
 
+export const addColllectionAndDocument = async (collectionKey, objectsToAdd) => {
+
+    const collectionRef = collection(db, collectionKey);
+    const batch = writeBatch(db);
+    objectsToAdd.forEach((object) => {
+        console.log({ collectionKey, object });
+        const docRef = doc(collectionRef, object.title.toLowerCase());
+        batch.set(docRef, object);
+    });
+    await batch.commit();
+    console.log('done');
+}
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(db, 'categories');
+    const q = query(collectionRef);
+
+    const querySnapShot = await getDocs(q);
+    const categoryMap = querySnapShot.docs.reduce((acc, docSnapShot) => {
+        const { title, items } = docSnapShot.data();
+        acc[title.toLowerCase()] = items;
+        return acc;
+    }, {});
+    return categoryMap;
+}
 export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
     const userDocRef = doc(db, 'users', userAuth.uid);
     console.log({ userDocRef });
@@ -77,6 +101,6 @@ export const createUserAuthFromEmailAndPassword = async (email, password) => {
 
 export const signOutUser = async () => await signOut(auth);
 
-export const onUserAuthChangedLister = (callback)=>{
-    return onAuthStateChanged(auth,callback)
+export const onUserAuthChangedLister = (callback) => {
+    return onAuthStateChanged(auth, callback)
 };
