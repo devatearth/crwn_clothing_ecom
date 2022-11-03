@@ -26,7 +26,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -64,14 +64,9 @@ export const addColllectionAndDocument = async (collectionKey, objectsToAdd) => 
 export const getCategoriesAndDocuments = async () => {
     const collectionRef = collection(db, 'categories');
     const q = query(collectionRef);
-
     const querySnapShot = await getDocs(q);
-    const categoryMap = querySnapShot.docs.reduce((acc, docSnapShot) => {
-        const { title, items } = docSnapShot.data();
-        acc[title.toLowerCase()] = items;
-        return acc;
-    }, {});
-    return categoryMap;
+    const categoryArray = querySnapShot.docs.map((docSnapSot) => docSnapSot.data());
+    return categoryArray;
 }
 export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
     const userDocRef = doc(db, 'users', userAuth.uid);
