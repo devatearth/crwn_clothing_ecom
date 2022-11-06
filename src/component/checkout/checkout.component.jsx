@@ -8,7 +8,6 @@ const Checkout = () => {
   console.log({ cartItems, cartTotal });
   return (
     <div className='checkout-container'>
-      <h1>hi</h1>
       <div className='checkout-header'>
         <div className='header-block'>
           <span>Product</span>
