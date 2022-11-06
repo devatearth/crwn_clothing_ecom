@@ -5,7 +5,6 @@ import './checkout.styles.scss'
 const Checkout = () => {
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotal);
-  console.log({ cartItems, cartTotal });
   return (
     <div className='checkout-container'>
       <div className='checkout-header'>

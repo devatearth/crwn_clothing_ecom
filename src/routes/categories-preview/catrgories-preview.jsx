@@ -5,11 +5,9 @@ import CategoryPreview from '../../component/category-preview/category-preview.c
 
 const CategoriesPreview = () => {
   const categories = useSelector(selectCategoriesMap);
-  console.log(categories);
   return (
     <>
       {categories ? Object.keys(categories).map((key) => {
-        console.log({ categories, key });
         const products = categories[key];
         return <CategoryPreview key={key} title={key} products={products} />;
       }) : ''}

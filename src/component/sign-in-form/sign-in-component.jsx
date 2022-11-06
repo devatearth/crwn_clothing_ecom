@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import FormInput from '../form-Input/form-input-component';
-import Button ,{BUTTON_TYPE_CLASSES} from '../button/button-component';
+import Button, { BUTTON_TYPE_CLASSES } from '../button/button-component';
 import {
     signInWithGooglePopup,
     createUserDocumentFromAuth,
@@ -27,7 +27,6 @@ const SignInForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(email, password);
         try {
             await signInAuthUserWithEmailAndPassword(
                 email,
