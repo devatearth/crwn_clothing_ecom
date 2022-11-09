@@ -68,26 +68,34 @@ export const getCategoriesAndDocuments = async () => {
     const categoryArray = querySnapShot.docs.map((docSnapSot) => docSnapSot.data());
     return categoryArray;
 }
-export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
+export const createUserDocumentFromAuth = async (
+    userAuth,
+    additionalInformation = {}
+) => {
+    if (!userAuth) return;
+
     const userDocRef = doc(db, 'users', userAuth.uid);
-    console.log({ userDocRef });
+
     const userSnapshot = await getDoc(userDocRef);
-    console.log({ userSnapshot });
+
     if (!userSnapshot.exists()) {
         const { displayName, email } = userAuth;
         const createdAt = new Date();
+
         try {
             await setDoc(userDocRef, {
                 displayName,
                 email,
                 createdAt,
-                ...additionalInfo,
-            })
+                ...additionalInformation,
+            });
         } catch (error) {
-            console.log('error creating the user ', error.message);
+            console.log('error creating the user', error.message);
         }
     }
-}
+
+    return userSnapshot;
+};
 
 export const createUserAuthFromEmailAndPassword = async (email, password) => {
     if (!email || !password) return;
@@ -99,3 +107,14 @@ export const signOutUser = async () => await signOut(auth);
 export const onUserAuthChangedLister = (callback) => {
     return onAuthStateChanged(auth, callback)
 };
+
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(
+            auth,
+            (userAuth) => {
+                unsubscribe();
+                resolve(userAuth);
+            }, reject)
+    })
+}
