@@ -13,7 +13,7 @@ export type CategoryItem = {
 }
 export type Category = {
     title: string,
-    imgUrl: string,
+    imageUrl: string,
     items: CategoryItem[]
 }
 
