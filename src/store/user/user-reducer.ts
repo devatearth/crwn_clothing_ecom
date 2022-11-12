@@ -1,6 +1,6 @@
 import { USER_ACTION_TYPES } from "./user.types";
 import { UserData } from "../../utils/firebase/firebase-utils";
-import { signInFailed, signOutFailed, signUpFailed, UserAction } from "./user.action";
+import { signInFailed, signInSuccess, signOutFailed, signOutSuccess, signUpFailed, UserAction } from "./user.action";
 export type UserState = {
     readonly currentUser: UserData | null;
     readonly isLoading: boolean;
@@ -13,7 +13,13 @@ const INTIAL_STATE: UserState = {
 }
 
 export const userReducer = (state = INTIAL_STATE, action: UserAction) => {
+    if (signInSuccess.match(action)) {
+        return { ...state, currentUser: action.payload };
+    }
 
+    if (signOutSuccess.match(action)) {
+        return { ...state, currentUser: null };
+    }
     if (
         signOutFailed.match(action) ||
         signInFailed.match(action) ||
